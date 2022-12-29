@@ -82,6 +82,8 @@ function categoryPage() {
   categoriesPreviewSection.classList.add('inactive');
   genericSection.classList.remove('inactive');
   movieDetailSection.classList.add('inactive');
+
+  getMoviesByCategory();
 }
 function homePage() {
   headerSection.classList.remove('header-container--long');

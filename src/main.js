@@ -10,11 +10,11 @@ const api = axios.create({
   }
 });
 
-async function getTrendingMoviesPreview() {
-  const { data } = await api('/trending/movie/day');
+// Utils
+async function loadMovies(container, path, optionalConfig = {}) {
+  const { data } = await api(path, optionalConfig);
 
   const movies = data.results;
-  const trendingMoviesPreviewList = document.querySelector('#trendingPreview .trendingPreview-movieList');
 
   movies.forEach(movie => {
     const movieContainer = document.createElement('div');
@@ -26,16 +26,11 @@ async function getTrendingMoviesPreview() {
     movieImg.setAttribute('src', `https://image.tmdb.org/t/p/w300/${movie.poster_path}`);
 
     movieContainer.appendChild(movieImg);
-    trendingMoviesPreviewList.appendChild(movieContainer);
+    container.appendChild(movieContainer);
   });
 }
 
-async function getCategoriesPreview() {
-  const { data } = await api('/genre/movie/list');
-
-  const categories = data.genres;
-  const categoriesPreviewList = document.querySelector('#categoriesPreview .categoriesPreview-list');
-
+function loadCategories(categories, container) {
   categories.forEach(category => {
     const categoryContainer = document.createElement('div');
     categoryContainer.classList.add('category-container');
@@ -43,11 +38,35 @@ async function getCategoriesPreview() {
     const categoryTitle = document.createElement('h3');
     categoryTitle.classList.add('category-title');
     categoryTitle.setAttribute('id', `id${category.id}`);
-
+    categoryTitle.addEventListener('click', () => {
+      localStorage.setItem('category-id', category.id);
+      headerCategoryTitle.textContent = category.name;
+      location.hash = `#category=${category.name.toLowerCase()}`;
+    });
     const categoryTitleText = document.createTextNode(category.name);
 
     categoryTitle.appendChild(categoryTitleText);
     categoryContainer.appendChild(categoryTitle);
-    categoriesPreviewList.appendChild(categoryContainer);
+    container.appendChild(categoryContainer);
+  });
+}
+
+// API
+async function getTrendingMoviesPreview() {
+  loadMovies(trendingMoviesPreviewList, '/trending/movie/day');
+}
+
+async function getCategoriesPreview() {
+  const { data } = await api('/genre/movie/list');
+  loadCategories(data.genres, categoriesPreviewList);
+}
+
+async function getMoviesByCategory() {
+  genericSection.innerHTML = '';
+
+  loadMovies(genericSection, '/discover/movie', {
+    params: {
+      with_genres: localStorage.getItem('category-id'),
+    },
   });
 }
