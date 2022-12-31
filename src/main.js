@@ -28,6 +28,8 @@ async function loadMovies(container, path, optionalConfig = {}) {
     movieContainer.appendChild(movieImg);
     container.appendChild(movieContainer);
   });
+
+  return data.total_results;
 }
 
 function loadCategories(categories, container) {
@@ -69,4 +71,29 @@ async function getMoviesByCategory() {
       with_genres: localStorage.getItem('category-id'),
     },
   });
+}
+
+async function getMoviesBySearch(query) {
+  let counter = 0;
+  genericSection.innerHTML = '';
+
+  while (counter < 2) {
+    const total_results = await loadMovies(genericSection, '/search/movie', {
+      params: {
+        query,
+      },
+    });
+    if (total_results == 0)
+      if (localStorage.getItem('search-movie-title') == '') break;
+      else query = localStorage.getItem('search-movie-title');
+    else {
+      localStorage.setItem('search-movie-title', '');
+      break;
+    }
+    counter++;
+  }
+}
+
+async function getTrendingMovies() {
+  loadMovies(genericSection, '/trending/movie/day');
 }
