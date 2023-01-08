@@ -130,6 +130,6 @@ function homePage() {
   genericSection.classList.add('inactive');
   movieDetailSection.classList.add('inactive');
 
-  if (!trendingMoviesPreviewList.childElementCount) getTrendingMoviesPreview();
-  if (!categoriesPreviewList.childElementCount) getCategoriesPreview();
+  getTrendingMoviesPreview();
+  getCategoriesPreview();
 }

@@ -38,7 +38,7 @@ body {
   font-weight: var(--font-weight-text1);
   font-size: 16px;
   padding: 0;
-  max-width: 800px;
+  max-width: 700px;
   margin: 4px auto 0;
 }
 
@@ -118,6 +118,50 @@ footer {
 
 .movie-img {
   border-radius: 8px;
+  background-color: gainsboro;
+}
+
+.movie-skeleton,
+.category-skeleton::before,
+.category-skeleton::after {
+  animation-name: loading;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+
+.category-skeleton {
+  margin-bottom: 10px;
+}
+
+.category-skeleton::before {
+  content: '••••';
+  color: transparent;
+  background-color: gainsboro;
+  border-radius: 8px;
+  margin-right: 8px;
+
+}
+
+.category-skeleton::after {
+  content: '••••••••••••••••••••••••••••••••••••••';
+  color: transparent;
+  background-color: gainsboro;
+  border-radius: 8px;
+}
+
+@keyframes loading {
+  0% {
+    background-color: rgb(239, 239, 239);
+  }
+
+  50% {
+    background-color: gainsboro;
+  }
+
+  100% {
+    background-color: rgb(239, 239, 239);
+  }
 }
 
 .categoriesPreview-list,
@@ -141,7 +185,7 @@ footer {
   position: fixed;
   top: 0;
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
 }
 
 .header-container--categoryView {
@@ -225,7 +269,8 @@ footer {
 
 
 /* Categories */
-.category-container {
+.category-container,
+.category-skeleton {
   width: 45%;
 }
 
@@ -354,7 +399,7 @@ footer {
   position: absolute;
   background-color: var(--purple-light-1);
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
 }
 
 .movieDetail-title {
@@ -382,8 +427,9 @@ footer {
 }
 
 .relatedMovies-container {
+  position: relative;
   margin-top: 24px;
-  height: 216px;
+  height: 235px;
 }
 
 .relatedMovies-title {
@@ -391,12 +437,13 @@ footer {
 }
 
 .relatedMovies-scrollContainer {
-  position: absolute;
+  /* position: absolute; */
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
   width: calc(100vw - 24px);
-  padding-bottom: 16px;
+  /* padding-bottom: 16px; */
+  max-width: 642px;
 }
 
 .relatedMovies-scrollContainer .movie-container {

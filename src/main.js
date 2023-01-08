@@ -1,5 +1,5 @@
 
-const API_URL = 'https://api.themoviedb.org/3';
+// const API_URL = 'https://api.themoviedb.org/3';
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -23,7 +23,7 @@ async function loadMovies(container, path, optionalConfig = {}) {
   const { data } = await api(path, optionalConfig);
 
   const movies = data.results;
-
+  container.innerHTML = '';
   movies.forEach(movie => {
     if (movie.poster_path != null) {
       const movieContainer = document.createElement('div');
@@ -46,6 +46,7 @@ async function loadMovies(container, path, optionalConfig = {}) {
 }
 
 function loadCategories(categories, container) {
+  container.innerHTML = '';
   categories.forEach(category => {
     const categoryContainer = document.createElement('div');
     categoryContainer.classList.add('category-container');
