@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@700;800&family=Red+Hat+Display:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dosis:wght@700;800&family=Red+Hat+Display:wght@400;500&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="./styles/app.css" />
   <title>PlatziMovies</title>
 </head>
+
 <body>
   <header id="header" class="header-container">
     <span class="header-arrow inactive">&lt;</span>
@@ -26,30 +30,15 @@
       <button href="#hola" class="trendingPreview-btn">Ver más</button>
     </div>
     <article class="trendingPreview-movieList">
-      <div class="movie-container">
-        <img
-          class="movie-img movie-skeleton"
-        />
+      <div class="movie-container movie-skeleton">
       </div>
-      <div class="movie-container">
-        <img
-          class="movie-img movie-skeleton"
-        />
+      <div class="movie-container movie-skeleton">
       </div>
-      <div class="movie-container">
-        <img
-          class="movie-img movie-skeleton"
-        />
+      <div class="movie-container movie-skeleton">
       </div>
-      <div class="movie-container">
-        <img
-          class="movie-img movie-skeleton"
-        />
+      <div class="movie-container movie-skeleton">
       </div>
-      <div class="movie-container">
-        <img
-          class="movie-img movie-skeleton"
-        />
+      <div class="movie-container movie-skeleton">
       </div>
     </article>
   </section>
@@ -71,31 +60,38 @@
       </div>
       <div class="category-skeleton">
       </div>
-      <div class="category-skeleton">
-      </div>
-      <div class="category-skeleton">
-      </div>
     </article>
   </section>
   <section id="genericList" class="genericList-container inactive">
     <!-- <div class="movie-container">
-      <img
-        src="https://image.tmdb.org/t/p/w300/adOzdWS35KAo21r9R4BuFCkLer6.jpg"
-        class="movie-img"
-        alt="Nombre de la película"
-      />
+      <img src="https://image.tmdb.org/t/p/w300/adOzdWS35KAo21r9R4BuFCkLer6.jpg" class="movie-img"
+        alt="Nombre de la película" />
     </div> -->
+    <div class="movie-container movie-container--loading"></div>
+    <div class="movie-container movie-container--loading"></div>
+    <div class="movie-container movie-container--loading"></div>
+    <div class="movie-container movie-container--loading"></div>
   </section>
   <section id="movieDetail" class="movieDetail-container inactive">
-    <h1 class="movieDetail-title">Deadpool</h1>
-    <span class="movieDetail-score">7.6</span>
-    <p class="movieDetail-description">
-      Wisecracking mercenary Deadpool battles the evil and powerful Cable and other bad guys to save a boy's life.
-    </p>
+    <h1 class="movieDetail-title"></h1>
+    <span class="movieDetail-score"></span>
+    <p class="movieDetail-description"></p>
     <article class="categories-list">
       <!-- <div class="category-container">
         <h3 id="id28" class="category-title">Romance</h3>
       </div> -->
+      <div class="category-skeleton">
+      </div>
+      <div class="category-skeleton">
+      </div>
+      <div class="category-skeleton">
+      </div>
+      <div class="category-skeleton">
+      </div>
+      <div class="category-skeleton">
+      </div>
+      <div class="category-skeleton">
+      </div>
     </article>
     <article class="relatedMovies-container">
       <h2 class="relatedMovies-title">Películas similares</h2>
@@ -107,6 +103,18 @@
             alt="Nombre de la película"
           />
         </div> -->
+        <div class="movie-container movie-skeleton">
+        </div>
+        <div class="movie-container movie-skeleton">
+        </div>
+        <div class="movie-container movie-skeleton">
+        </div>
+        <div class="movie-container movie-skeleton">
+        </div>
+        <div class="movie-container movie-skeleton">
+        </div>
+        <div class="movie-container movie-skeleton">
+        </div>
       </div>
     </article>
   </section>
@@ -117,4 +125,5 @@
   <script src="./src/main.js"></script>
   <script src="./src/navigation.js"></script>
 </body>
+
 </html>

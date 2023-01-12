@@ -1,5 +1,5 @@
 
-// const API_URL = 'https://api.themoviedb.org/3';
+const API_URL = 'https://api.themoviedb.org/3';
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -76,8 +76,6 @@ async function getCategoriesPreview() {
 }
 
 async function getMoviesByCategory(category_id) {
-  genericSection.innerHTML = '';
-
   loadMovies(genericSection, '/discover/movie', {
     params: {
       with_genres: category_id,
@@ -87,7 +85,6 @@ async function getMoviesByCategory(category_id) {
 
 async function getMoviesBySearch(query) {
   let counter = 0;
-  genericSection.innerHTML = '';
 
   while (counter < 2) {
     const total_results = await loadMovies(genericSection, '/search/movie', {
@@ -123,11 +120,13 @@ async function getMovieById(movieId) {
     url(${movieImgUrl})
   `;
 
+  movieDetailTitle.classList.remove('movieDetail-title--loading');
+  movieDetailDescription.classList.remove('movieDetail-description--loading');
+  movieDetailScore.classList.remove('inactive');
   movieDetailTitle.textContent = movie.title;
   movieDetailDescription.textContent = movie.overview;
   movieDetailScore.textContent = movie.vote_average.toFixed(1);
 
-  movieDetailCategoriesList.innerHTML = '';
   loadCategories(movie.genres, movieDetailCategoriesList);
   getRelatedMoviesById(movieId)
 }
