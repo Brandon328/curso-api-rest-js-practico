@@ -433,6 +433,7 @@ footer {
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 32px 24px;
+  height: auto;
 }
 
 .genericList-container .movie-container {
@@ -442,6 +443,7 @@ footer {
 
 .genericList-container .movie-img {
   width: 100%;
+  min-height: 200px;
 }
 
 
@@ -493,13 +495,12 @@ footer {
 }
 
 .relatedMovies-scrollContainer {
-  /* position: absolute; */
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
   width: calc(100vw - 24px);
-  /* padding-bottom: 16px; */
   max-width: 642px;
+  aspect-ratio: 321 / 100;
 }
 
 .relatedMovies-scrollContainer .movie-container {
@@ -532,4 +533,10 @@ footer {
 /* Navigation */
 .inactive {
   display: none;
+}
+
+@media (min-width: 600px) {
+  .genericList-container .movie-img{
+    min-height: 400px;
+  }
 }
