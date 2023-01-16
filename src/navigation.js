@@ -1,11 +1,11 @@
 let historyNav = [];
+let page = 1;
 const nodesMovies = `
   <div class="movie-container movie-container--loading"></div>
   <div class="movie-container movie-container--loading"></div>
   <div class="movie-container movie-container--loading"></div>
   <div class="movie-container movie-container--loading"></div>
 `;
-
 const nodesCategories = `
   <div class="category-skeleton"></div>
   <div class="category-skeleton"></div>
@@ -23,11 +23,12 @@ const nodesRelatedMovies = `
   <div class="movie-container movie-skeleton"></div>
 `;
 
-
 searchFormBtn.addEventListener('click', () => {
-  genericSection.innerHTML = nodesMovies
-  localStorage.setItem('search-movie-title', searchFormInput.value);
-  location.hash = `#search=${searchFormInput.value}`;
+  if (searchFormInput.value != '') {
+    genericSection.innerHTML = nodesMovies
+    localStorage.setItem('search-movie-title', searchFormInput.value);
+    location.hash = `#search=${searchFormInput.value}`;
+  }
   // location.replace(location.hash.replace(/\+|%20/g, "-"))
 });
 trendingBtn.addEventListener('click', () => {
@@ -44,28 +45,59 @@ window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
 
 function navigator() {
+  // window.removeEventListener('scroll', infiniteScroll);
   window.scrollTo(0, 0);
-  if (location.hash.startsWith('#trends')) {
+  if (location.hash.startsWith('#trends')) { // <=
     genericSection.innerHTML = nodesMovies;
     trendsPage();
-  } else if (location.hash.startsWith('#search=')) {
+  } else if (location.hash.startsWith('#search=')) { // <=
     genericSection.innerHTML = nodesMovies;
     searchPage();
   } else if (location.hash.startsWith('#movie=')) {
     movieDetailCategoriesList.innerHTML = nodesCategories;
     relatedMoviesContainer.innerHTML = nodesRelatedMovies;
     moviePage();
-  } else if (location.hash.startsWith('#category=')) {
+  } else if (location.hash.startsWith('#category=')) { // <=
     genericSection.innerHTML = nodesMovies;
     categoryPage();
   } else {
     historyNav = [];
     homePage();
   }
-  if (location.hash.startsWith('#trends') || location.hash.startsWith('#search=')
-    || location.hash.startsWith('#movie=') || location.hash.startsWith('#category=')) {
+  if (!location.hash.startsWith('#home')) {
     if (historyNav[historyNav.length - 1] != location.hash) {
       historyNav.push(location.hash);
+    }
+  }
+  if (location.hash.startsWith('#trends')
+    || location.hash.startsWith('#category=')) {
+    page = 1;
+    window.addEventListener('scroll', infiniteScroll);
+  }
+  else {
+    window.removeEventListener('scroll', infiniteScroll);
+  }
+}
+
+async function infiniteScroll() {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  if ((scrollTop + clientHeight) >= (scrollHeight - 5)) {
+    page++;
+    if (location.hash.startsWith('#trends')) {
+      loadMovies(genericSection, '/trending/movie/day',
+        globalObserver, { params: { page, }, }, false);
+    }
+    if (location.hash.startsWith('#category=')) {
+      let [, category] = location.hash.split('=');
+      const obj = await loadCategoryList();
+      loadMovies(genericSection, '/discover/movie',
+        globalObserver,
+        {
+          params: {
+            with_genres: obj[category],
+            page
+          },
+        }, false);
     }
   }
 }
@@ -133,7 +165,7 @@ function moviePage() {
   const [, movieId] = location.hash.split('=');
   getMovieById(movieId);
 }
-function categoryPage() {
+async function categoryPage() {
   headerSection.classList.remove('header-container--long');
   headerSection.style.background = '';
   arrowBtn.classList.remove('inactive');
@@ -150,6 +182,7 @@ function categoryPage() {
   let [, category] = location.hash.split('=');
   category = category.toLocaleLowerCase().replace(/\+|%20/g, " ");
   headerCategoryTitle.textContent = category[0].toUpperCase() + category.substring(1);
+  const obj = await loadCategoryList();
   getMoviesByCategory(obj[category]);
 }
 function homePage() {

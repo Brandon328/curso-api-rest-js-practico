@@ -195,7 +195,7 @@ footer {
   animation: loading infinite 1.5s;
 }
 
-.movieDetail-title--loading{
+.movieDetail-title--loading {
   background-color: var(--purple-light-2);
   height: 21px;
   border-radius: 8px;
@@ -203,7 +203,7 @@ footer {
 }
 
 .movieDetail-description--loading::before,
-.movieDetail-description--loading::after{
+.movieDetail-description--loading::after {
   content: '';
   display: block;
   background-color: var(--purple-light-2);
@@ -212,7 +212,8 @@ footer {
   margin-block-end: 10px;
   animation: loading infinite 2s;
 }
-.movieDetail-description--loading::after{
+
+.movieDetail-description--loading::after {
   width: 50%;
 }
 
@@ -500,7 +501,7 @@ footer {
   white-space: nowrap;
   width: calc(100vw - 24px);
   max-width: 642px;
-  aspect-ratio: 321 / 100;
+  aspect-ratio: 321 / 160;
 }
 
 .relatedMovies-scrollContainer .movie-container {
@@ -536,7 +537,11 @@ footer {
 }
 
 @media (min-width: 600px) {
-  .genericList-container .movie-img{
+  .genericList-container .movie-img {
     min-height: 400px;
+  }
+
+  .relatedMovies-scrollContainer {
+    aspect-ratio: 321 / 100;
   }
 }

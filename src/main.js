@@ -28,19 +28,20 @@ function lazyLoad(entries, observer) {
 }
 
 // Utils
-const obj = {};
-(async () => {
+async function loadCategoryList() {
+  const obj = {};
   const { data } = await api('/genre/movie/list');
   data.genres.forEach(genre => {
     obj[genre.name.toLowerCase()] = genre.id;
   });
-})();
+  return obj;
+}
 
-async function loadMovies(container, path, observer, optionalConfig = {}) {
+async function loadMovies(container, path, observer, optionalConfig = {}, clean = true) {
   const { data } = await api(path, optionalConfig);
 
   const movies = data.results;
-  container.innerHTML = '';
+  if (clean) container.innerHTML = '';
   movies.forEach(movie => {
     if (movie.poster_path != null) {
       const movieContainer = document.createElement('div');
@@ -60,7 +61,6 @@ async function loadMovies(container, path, observer, optionalConfig = {}) {
       observer.observe(movieImg);
     }
   });
-
   return data.total_results;
 }
 
@@ -104,7 +104,6 @@ async function getMoviesByCategory(category_id) {
 
 async function getMoviesBySearch(query) {
   let counter = 0;
-
   while (counter < 2) {
     const total_results = await loadMovies(genericSection, '/search/movie', globalObserver, {
       params: {
@@ -151,6 +150,7 @@ async function getMovieById(movieId) {
 }
 
 async function getRelatedMoviesById(movieId) {
-  relatedMoviesContainer.innerHTML = '';
-  loadMovies(relatedMoviesContainer, `/movie/${movieId}/recommendations`, globalObserver);
+  const total_results = await loadMovies(relatedMoviesContainer, `/movie/${movieId}/recommendations`, globalObserver);
+  if (total_results == 0) relatedMoviesPreContainer.classList.add('inactive');
+  else relatedMoviesPreContainer.classList.remove('inactive');
 }
