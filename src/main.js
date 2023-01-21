@@ -1,4 +1,4 @@
-
+let maxPage;
 const API_URL = 'https://api.themoviedb.org/3';
 const api = axios.create({
   baseURL: API_URL,
@@ -39,7 +39,8 @@ async function loadCategoryList() {
 
 async function loadMovies(container, path, observer, optionalConfig = {}, clean = true) {
   const { data } = await api(path, optionalConfig);
-
+  maxPage = data.total_pages;
+  console.log(maxPage);
   const movies = data.results;
   if (clean) container.innerHTML = '';
   movies.forEach(movie => {
@@ -113,10 +114,8 @@ async function getMoviesBySearch(query) {
     if (total_results == 0)
       if (localStorage.getItem('search-movie-title') == '') break;
       else query = localStorage.getItem('search-movie-title');
-    else {
-      localStorage.setItem('search-movie-title', '');
+    else
       break;
-    }
     counter++;
   }
 }

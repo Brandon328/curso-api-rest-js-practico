@@ -70,7 +70,8 @@ function navigator() {
     }
   }
   if (location.hash.startsWith('#trends')
-    || location.hash.startsWith('#category=')) {
+    || location.hash.startsWith('#category=')
+    || location.hash.startsWith('#search=')) {
     page = 1;
     window.addEventListener('scroll', infiniteScroll);
   }
@@ -81,7 +82,9 @@ function navigator() {
 
 async function infiniteScroll() {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  if ((scrollTop + clientHeight) >= (scrollHeight - 5)) {
+  const isAtBottom = (scrollTop + clientHeight) >= (scrollHeight - 5);
+  const isNotMaxPage = page < maxPage;
+  if (isAtBottom && isNotMaxPage) {
     page++;
     if (location.hash.startsWith('#trends')) {
       loadMovies(genericSection, '/trending/movie/day',
@@ -98,6 +101,15 @@ async function infiniteScroll() {
             page
           },
         }, false);
+    }
+    if (location.hash.startsWith('#search=')) {
+      let query = localStorage.getItem('search-movie-title');
+      loadMovies(genericSection, '/search/movie', globalObserver, {
+        params: {
+          query,
+          page
+        },
+      }, false);
     }
   }
 }
