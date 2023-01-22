@@ -56,7 +56,17 @@ async function loadMovies(container, path, observer, optionalConfig = {}, clean 
       movieImg.setAttribute('alt', movie.title);
       movieImg.setAttribute('data-src', `https://image.tmdb.org/t/p/w300/${movie.poster_path}`);
 
+      const movieBtn = document.createElement('button');
+      movieBtn.classList.add('movie-btn');
+      movieBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        movieBtn.classList.toggle('movie-btn--liked');
+        // Agregar la pelicula a localstorage
+
+      });
+
       movieContainer.appendChild(movieImg);
+      movieContainer.appendChild(movieBtn);
       container.appendChild(movieContainer);
 
       observer.observe(movieImg);
