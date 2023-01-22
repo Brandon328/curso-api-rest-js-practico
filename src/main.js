@@ -1,4 +1,4 @@
-let maxPage;
+// Data
 const API_URL = 'https://api.themoviedb.org/3';
 const api = axios.create({
   baseURL: API_URL,
@@ -10,11 +10,109 @@ const api = axios.create({
   }
 });
 
+function getLikedMovieList() {
+  const likedMovieList = JSON.parse(localStorage.getItem('liked_movies'));
+  let movies;
+  if (likedMovieList) {
+    movies = likedMovieList;
+  }
+  else {
+    movies = {};
+  }
+  return movies;
+}
+
+function likeMovie(movie) {
+  const likedMovieList = getLikedMovieList();
+  if (likedMovieList[movie.id]) {
+    delete likedMovieList[movie.id];
+    trendingMoviesPreviewList.childNodes.forEach(node => {
+      const id = node.getAttribute('data-id');
+      if (movie.id == id)
+        node.querySelector('button').classList.remove('movie-btn--liked');
+      return node;
+    });
+  }
+  else
+    likedMovieList[movie.id] = movie;
+
+  localStorage.setItem('liked_movies', JSON.stringify(likedMovieList));
+  getLikedMovies();
+}
+// function likeMovie(movie, movieContainer) {
+//   const likedMovieList = getLikedMovieList();
+//   let isLiked = false;
+//   if (likedMovieList[movie.id]) {
+//     delete likedMovieList[movie.id];
+//     likedMovieSection.removeChild(movieContainer);
+
+//     trendingMoviesPreviewList.childNodes.forEach(node => {
+//       const id = node.getAttribute('data-id');
+//       if (movie.id = id)
+//         node.querySelector('button').classList.remove('movie-btn--liked');
+//       return node;
+//     });
+//   }
+//   else {
+//     isLiked = true;
+//     likedMovieList[movie.id] = movie;
+//   }
+//   localStorage.setItem('liked_movies', JSON.stringify(likedMovieList));
+
+//   if (isLiked)
+//     loadMovies([movie,], likedMovieSection, likedMovieObserver, { clean: false, isLiked });
+// }
+
+// Helpers
+
+let maxPage;
+function loadMovies(movies, container, observer, { clean = true, isLiked = false } = {}) {
+  if (clean) container.innerHTML = '';
+  const likedMovieList = getLikedMovieList();
+  movies.forEach(movie => {
+    if (movie.poster_path != null) {
+      const movieContainer = document.createElement('div');
+      movieContainer.classList.add('movie-container');
+      movieContainer.setAttribute('data-id', movie.id);
+      movieContainer.addEventListener('click', () => {
+        location.hash = `#movie=${movie.id}`;
+      });
+
+      const movieImg = document.createElement('img');
+      movieImg.classList.add('movie-img');
+      movieImg.setAttribute('alt', movie.title);
+      movieImg.setAttribute('data-src', `https://image.tmdb.org/t/p/w300/${movie.poster_path}`);
+
+      const movieBtn = document.createElement('button');
+      movieBtn.classList.add('movie-btn');
+      movieBtn.addEventListener('click', event => {
+        event.stopPropagation();
+        movieBtn.classList.toggle('movie-btn--liked');
+        likeMovie(movie, event.target.parentNode);
+      });
+
+      if (likedMovieList || isLiked) {
+        if (likedMovieList[movie.id]) movieBtn.classList.add('movie-btn--liked');
+      }
+
+      movieContainer.appendChild(movieImg);
+      movieContainer.appendChild(movieBtn);
+      container.appendChild(movieContainer);
+
+      observer.observe(movieImg);
+    }
+  });
+}
+
 // Intersection Obersever (Lazy Load)
 let options = {
   root: trendingMoviesPreviewList,
 }
+let options2 = {
+  root: likedMovieSection,
+}
 let moviesObserver = new IntersectionObserver(lazyLoad, options);
+let likedMovieObserver = new IntersectionObserver(lazyLoad, options2);
 let globalObserver = new IntersectionObserver(lazyLoad, null);
 function lazyLoad(entries, observer) {
   entries.forEach(entry => {
@@ -37,41 +135,11 @@ async function loadCategoryList() {
   return obj;
 }
 
-async function loadMovies(container, path, observer, optionalConfig = {}, clean = true) {
+async function queryLoadMovies(container, path, observer, optionalConfig = {}, clean = true) {
   const { data } = await api(path, optionalConfig);
   maxPage = data.total_pages;
-  console.log(maxPage);
   const movies = data.results;
-  if (clean) container.innerHTML = '';
-  movies.forEach(movie => {
-    if (movie.poster_path != null) {
-      const movieContainer = document.createElement('div');
-      movieContainer.classList.add('movie-container');
-      movieContainer.addEventListener('click', () => {
-        location.hash = `#movie=${movie.id}`;
-      });
-
-      const movieImg = document.createElement('img');
-      movieImg.classList.add('movie-img');
-      movieImg.setAttribute('alt', movie.title);
-      movieImg.setAttribute('data-src', `https://image.tmdb.org/t/p/w300/${movie.poster_path}`);
-
-      const movieBtn = document.createElement('button');
-      movieBtn.classList.add('movie-btn');
-      movieBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        movieBtn.classList.toggle('movie-btn--liked');
-        // Agregar la pelicula a localstorage
-
-      });
-
-      movieContainer.appendChild(movieImg);
-      movieContainer.appendChild(movieBtn);
-      container.appendChild(movieContainer);
-
-      observer.observe(movieImg);
-    }
-  });
+  loadMovies(movies, container, observer);
   return data.total_results;
 }
 
@@ -97,7 +165,7 @@ function loadCategories(categories, container) {
 
 // API
 async function getTrendingMoviesPreview() {
-  loadMovies(trendingMoviesPreviewList, '/trending/movie/day', moviesObserver);
+  queryLoadMovies(trendingMoviesPreviewList, '/trending/movie/day', moviesObserver);
 }
 
 async function getCategoriesPreview() {
@@ -106,7 +174,7 @@ async function getCategoriesPreview() {
 }
 
 async function getMoviesByCategory(category_id) {
-  loadMovies(genericSection, '/discover/movie', globalObserver, {
+  queryLoadMovies(genericSection, '/discover/movie', globalObserver, {
     params: {
       with_genres: category_id,
     },
@@ -116,7 +184,7 @@ async function getMoviesByCategory(category_id) {
 async function getMoviesBySearch(query) {
   let counter = 0;
   while (counter < 2) {
-    const total_results = await loadMovies(genericSection, '/search/movie', globalObserver, {
+    const total_results = await queryLoadMovies(genericSection, '/search/movie', globalObserver, {
       params: {
         query,
       },
@@ -131,7 +199,7 @@ async function getMoviesBySearch(query) {
 }
 
 async function getTrendingMovies() {
-  loadMovies(genericSection, '/trending/movie/day', globalObserver);
+  queryLoadMovies(genericSection, '/trending/movie/day', globalObserver);
 }
 
 async function getMovieById(movieId) {
@@ -159,7 +227,15 @@ async function getMovieById(movieId) {
 }
 
 async function getRelatedMoviesById(movieId) {
-  const total_results = await loadMovies(relatedMoviesContainer, `/movie/${movieId}/recommendations`, globalObserver);
+  const total_results = await queryLoadMovies(relatedMoviesContainer, `/movie/${movieId}/recommendations`, globalObserver);
   if (total_results == 0) relatedMoviesPreContainer.classList.add('inactive');
   else relatedMoviesPreContainer.classList.remove('inactive');
+}
+
+function getLikedMovies() {
+  const likedMovieList = getLikedMovieList();
+  if (likedMovieList) {
+    const moviesArray = Object.values(likedMovieList);
+    loadMovies(moviesArray, likedMovieSection, likedMovieObserver);
+  }
 }
