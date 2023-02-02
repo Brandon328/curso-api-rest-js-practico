@@ -24,9 +24,10 @@ const nodesRelatedMovies = `
 `;
 
 searchFormBtn.addEventListener('click', () => {
-  if (searchFormInput.value != '') {
-    genericSection.innerHTML = nodesMovies
-    localStorage.setItem('search-movie-title', searchFormInput.value);
+  let [, movieName] = location.hash.split('=');
+  movieName = decodeURI(movieName);
+  if (searchFormInput.value != '' && movieName != searchFormInput.value) {
+    genericSection.innerHTML = nodesMovies;
     location.hash = `#search=${searchFormInput.value}`;
   }
   // location.replace(location.hash.replace(/\+|%20/g, "-"))
@@ -46,19 +47,18 @@ window.addEventListener('hashchange', moviesNavigator, false);
 
 
 function moviesNavigator() {
-  // window.removeEventListener('scroll', infiniteScroll);
   window.scrollTo(0, 0);
-  if (location.hash.startsWith('#trends')) { // <=
+  if (location.hash.startsWith('#trends')) {
     genericSection.innerHTML = nodesMovies;
     trendsPage();
-  } else if (location.hash.startsWith('#search=')) { // <=
+  } else if (location.hash.startsWith('#search=')) {
     genericSection.innerHTML = nodesMovies;
     searchPage();
   } else if (location.hash.startsWith('#movie=')) {
     movieDetailCategoriesList.innerHTML = nodesCategories;
     relatedMoviesContainer.innerHTML = nodesRelatedMovies;
     moviePage();
-  } else if (location.hash.startsWith('#category=')) { // <=
+  } else if (location.hash.startsWith('#category=')) {
     genericSection.innerHTML = nodesMovies;
     categoryPage();
   } else {
@@ -93,6 +93,7 @@ async function infiniteScroll() {
     }
     if (location.hash.startsWith('#category=')) {
       let [, category] = location.hash.split('=');
+      category = decodeURI(category);
       const obj = await loadCategoryList();
       queryLoadMovies(genericSection, '/discover/movie',
         globalObserver,
@@ -104,7 +105,8 @@ async function infiniteScroll() {
         }, false);
     }
     if (location.hash.startsWith('#search=')) {
-      let query = localStorage.getItem('search-movie-title');
+      let [, query] = location.hash.split('=');
+      query = decodeURI(query);
       queryLoadMovies(genericSection, '/search/movie', globalObserver, {
         params: {
           query,
@@ -152,7 +154,7 @@ function searchPage() {
   movieDetailSection.classList.add('inactive');
 
   let [, query] = location.hash.split('=');
-  query = query.replace(/\+|%20/g, " ");
+  query = decodeURI(query);
   getMoviesBySearch(query);
 }
 function moviePage() {
@@ -197,7 +199,7 @@ async function categoryPage() {
   liked.classList.add('inactive');
 
   let [, category] = location.hash.split('=');
-  category = category.toLocaleLowerCase().replace(/\+|%20/g, " ");
+  category = decodeURI(category);
   headerCategoryTitle.textContent = category[0].toUpperCase() + category.substring(1);
   const obj = await loadCategoryList();
   getMoviesByCategory(obj[category]);

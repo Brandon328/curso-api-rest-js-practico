@@ -75,7 +75,6 @@ function likeMovie(movie) {
 // }
 
 // Helpers
-
 let maxPage;
 function loadMovies(movies, container, observer, { clean = true, isLiked = false } = {}) {
   if (clean) container.innerHTML = '';
@@ -150,8 +149,8 @@ async function queryLoadMovies(container, path, observer, optionalConfig = {}, c
   const { data } = await api(path, optionalConfig);
   maxPage = data.total_pages;
   const movies = data.results;
-  loadMovies(movies, container, observer);
-  return data.total_results;
+  loadMovies(movies, container, observer, { clean });
+  // return data.total_results;
 }
 
 function loadCategories(categories, container) {
@@ -192,21 +191,12 @@ async function getMoviesByCategory(category_id) {
   });
 }
 
-async function getMoviesBySearch(query) {
-  let counter = 0;
-  while (counter < 2) {
-    const total_results = await queryLoadMovies(genericSection, '/search/movie', globalObserver, {
-      params: {
-        query,
-      },
-    });
-    if (total_results == 0)
-      if (localStorage.getItem('search-movie-title') == '') break;
-      else query = localStorage.getItem('search-movie-title');
-    else
-      break;
-    counter++;
-  }
+function getMoviesBySearch(query) {
+  queryLoadMovies(genericSection, '/search/movie', globalObserver, {
+    params: {
+      query,
+    },
+  });
 }
 
 async function getTrendingMovies() {
