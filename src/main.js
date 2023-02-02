@@ -1,5 +1,10 @@
+// Language
+btnLanguage.value = localStorage.getItem('language') || navigator.language;
+selectLanguage(false);
+
 // Data
 const API_URL = 'https://api.themoviedb.org/3';
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -7,8 +12,14 @@ const api = axios.create({
   },
   params: {
     'api_key': API_KEY,
+    'language': btnLanguage.value
   }
 });
+
+const translateApi = axios.create({
+  baseURL: 'https://api.mymemory.translated.net/get',
+});
+
 
 function getLikedMovieList() {
   const likedMovieList = JSON.parse(localStorage.getItem('liked_movies'));
@@ -104,7 +115,7 @@ function loadMovies(movies, container, observer, { clean = true, isLiked = false
   });
 }
 
-// Intersection Obersever (Lazy Load)
+// Intersection Observer (Lazy Load)
 let options = {
   root: trendingMoviesPreviewList,
 }
@@ -238,4 +249,68 @@ function getLikedMovies() {
     const moviesArray = Object.values(likedMovieList);
     loadMovies(moviesArray, likedMovieSection, likedMovieObserver);
   }
+}
+
+// Language
+function selectLanguage(reload = true) {
+  const language = btnLanguage.value;
+  switch (language) {
+    case 'es-PE':
+      flag.src = 'src/img/peru.svg';
+      break;
+    case 'es-ES':
+      flag.src = 'src/img/spain.svg';
+      break;
+    case 'en-US':
+      flag.src = 'src/img/us.svg';
+      break;
+    case 'fr-FR':
+      flag.src = 'src/img/france.svg';
+      break;
+    case 'ja-JP':
+      flag.src = 'src/img/japan.svg';
+      break;
+  }
+  localStorage.setItem('language', language);
+  if (reload) location.reload();
+}
+
+const [lang,] = btnLanguage.value.split('-');
+if (lang == 'es') fillHeader();
+else fillHeader(true, lang);
+
+function fillHeader(translate = false, lang = '') {
+  const headers = [
+    ['Acción', headerCategoryTitle],
+    ['Tendencias', trendingHeader],
+    ['Ver más', trendingBtn],
+    ['Categorías', categoryHeader],
+    ['Películas favoritas', likedHeader],
+    ['Películas similares', relatedMoviesHeader],
+    ['Hecho con amor en Platzi por @Brandon328', footer],
+    ['Ingresa el nombre de la película', searchFormInput, true]
+  ];
+
+  headers.forEach(header => {
+    if (translate) translateHeaders(header[0], header[1], lang, header[2]);
+    else {
+      if (header[2]) {
+        header[1].placeholder = header[0];
+      }
+      else {
+        header[1].textContent = header[0];
+      }
+    }
+  });
+}
+
+async function translateHeaders(text, headerTag, lang, placeholder = false) {
+  const { data } = await translateApi('', {
+    params: {
+      'q': text,
+      'langpair': `es|${lang}`
+    }
+  });
+  if (placeholder) headerTag.placeholder = data.responseData.translatedText;
+  else headerTag.textContent = data.responseData.translatedText;
 }

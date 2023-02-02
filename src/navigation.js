@@ -41,13 +41,11 @@ arrowBtn.addEventListener('click', () => {
     historyNav.pop();
   }
 });
-window.addEventListener('DOMContentLoaded', navigator, false);
-window.addEventListener('hashchange', navigator, false);
-window.addEventListener('storage', e => {
-  console.log(e);
-}, false);
+window.addEventListener('DOMContentLoaded', moviesNavigator, false);
+window.addEventListener('hashchange', moviesNavigator, false);
 
-function navigator() {
+
+function moviesNavigator() {
   // window.removeEventListener('scroll', infiniteScroll);
   window.scrollTo(0, 0);
   if (location.hash.startsWith('#trends')) { // <=

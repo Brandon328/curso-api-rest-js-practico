@@ -40,6 +40,7 @@ body {
   padding: 0;
   max-width: 700px;
   margin: 4px auto 0;
+  position: relative;
 }
 
 h1,
@@ -91,6 +92,28 @@ button {
   font-weight: var(--font-weight-text2);
   font-size: 14px;
   cursor: pointer;
+}
+
+/* dropdown language */
+#dp-language {
+  position: absolute;
+  top: 40px;
+  right: 22px;
+  background-color: white;
+  border-radius: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+#dp-language img {
+  width: 20px;
+  margin-inline-end: 4px;
+}
+
+#dp-language select {
+  border: none;
+  padding: 4px;
 }
 
 /* Shared */

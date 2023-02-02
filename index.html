@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,19 +15,29 @@
 </head>
 
 <body>
+  <section id="dp-language">
+    <img src="src/img/peru.svg" alt="japan flag" id="flag">
+    <select onchange="selectLanguage()" id="btnLanguage">
+      <option value="es-PE">PE</option>
+      <option value="es-ES">ES</option>
+      <option value="en-US">US</option>
+      <option value="fr-FR">FR</option>
+      <option value="ja-JP">JP</option>
+    </select>
+  </section>
   <header id="header" class="header-container">
     <span class="header-arrow inactive">&lt;</span>
     <h1 class="header-title">PlatziMovies</h1>
-    <h1 class="header-title header-title--categoryView inactive">Acción</h1>
+    <h1 class="header-title header-title--categoryView inactive" id=""></h1>
     <form id="searchForm" class="header-searchForm">
-      <input type="text" placeholder="Search a movie" required/>
+      <input type="text" required/>
       <button id="searchBtn">🔍</button>
     </form>
   </header>
   <section id="trendingPreview" class="trendingPreview-container">
     <div class="trendingPreview-header">
-      <h2 class="trendingPreview-title">Tendencias</h2>
-      <button href="#hola" class="trendingPreview-btn">Ver más</button>
+      <h2 class="trendingPreview-title" id="trendingHeader"></h2>
+      <button href="#hola" class="trendingPreview-btn"></button>
     </div>
     <article class="trendingPreview-movieList">
       <div class="movie-container movie-skeleton">
@@ -43,7 +53,7 @@
     </article>
   </section>
   <section id="categoriesPreview" class="categoriesPreview-container">
-    <h2 class="categoriesPreview-title">Categorías</h2>
+    <h2 class="categoriesPreview-title" id="categoryHeader"></h2>
     <article class="categoriesPreview-list">
       <!-- <div class="category-container">
         <h3 id="id28" class="category-title">Romance</h3>
@@ -65,7 +75,7 @@
 
   <section id="liked" class="liked-container">
     <div class="liked-header">
-      <h2 class="liked-title">Peliculas favoritas</h2>
+      <h2 class="liked-title" id="likedHeader"></h2>
     </div>
     <article class="liked-movieList">
     </article>
@@ -103,7 +113,7 @@
       </div>
     </article>
     <article class="relatedMovies-container">
-      <h2 class="relatedMovies-title">Películas similares</h2>
+      <h2 class="relatedMovies-title" id="relatedMoviesHeader"></h2>
       <div class="relatedMovies-scrollContainer">
         <!-- <div class="movie-container">
           <img
@@ -127,7 +137,7 @@
       </div>
     </article>
   </section>
-  <footer>Hecho con amor en Platzi por @Brandon328</footer>
+  <footer id="footer"></footer>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="./src/secrets.js"></script>
   <script src="./src/nodes.js"></script>
