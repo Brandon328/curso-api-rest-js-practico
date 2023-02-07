@@ -41,38 +41,14 @@ function likeMovie(movie) {
       const id = node.getAttribute('data-id');
       if (movie.id == id)
         node.querySelector('button').classList.remove('movie-btn--liked');
-      return node;
     });
   }
   else
     likedMovieList[movie.id] = movie;
 
   localStorage.setItem('liked_movies', JSON.stringify(likedMovieList));
-  getLikedMovies();
+  getLikedMovies(500);
 }
-// function likeMovie(movie, movieContainer) {
-//   const likedMovieList = getLikedMovieList();
-//   let isLiked = false;
-//   if (likedMovieList[movie.id]) {
-//     delete likedMovieList[movie.id];
-//     likedMovieSection.removeChild(movieContainer);
-
-//     trendingMoviesPreviewList.childNodes.forEach(node => {
-//       const id = node.getAttribute('data-id');
-//       if (movie.id = id)
-//         node.querySelector('button').classList.remove('movie-btn--liked');
-//       return node;
-//     });
-//   }
-//   else {
-//     isLiked = true;
-//     likedMovieList[movie.id] = movie;
-//   }
-//   localStorage.setItem('liked_movies', JSON.stringify(likedMovieList));
-
-//   if (isLiked)
-//     loadMovies([movie,], likedMovieSection, likedMovieObserver, { clean: false, isLiked });
-// }
 
 // Helpers
 let maxPage;
@@ -233,11 +209,13 @@ async function getRelatedMoviesById(movieId) {
   else relatedMoviesPreContainer.classList.remove('inactive');
 }
 
-function getLikedMovies() {
+function getLikedMovies(delay = 0) {
   const likedMovieList = getLikedMovieList();
   if (likedMovieList) {
-    const moviesArray = Object.values(likedMovieList);
-    loadMovies(moviesArray, likedMovieSection, likedMovieObserver);
+    setTimeout(() => {
+      const moviesArray = Object.values(likedMovieList);
+      loadMovies(moviesArray, likedMovieSection, likedMovieObserver);
+    }, delay);
   }
 }
 

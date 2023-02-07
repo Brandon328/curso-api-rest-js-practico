@@ -157,9 +157,13 @@ footer,
   border-radius: 30px;
   padding: 0;
   margin: 0;
+  will-change: background-color, box-shadow;
+  transition-duration: 500ms;
+  transition-property: background-color, box-shadow;
 }
 
 .movie-btn::before {
+  will-change: content;
   content: '🤍';
 }
 
